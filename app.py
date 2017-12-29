@@ -4,6 +4,7 @@ from bokeh.resources import CDN
 from bokeh.embed import file_html
 from bokeh.io import output_notebook, push_notebook, show, output_file
 import pandas as pd
+from bokeh.util.string import encode_utf8
 app = Flask(__name__)
 
 
@@ -13,8 +14,7 @@ def my_form():
     
 @app.route('/', methods=['POST'])
 def index():
-    #ticker = input('stock ticker:')
-    #ticker=request.form('ticker')
+
     ticker=request.form['tick']
     baseurl='https://www.quandl.com/api/v3/datasets/WIKI/'
     key='api_key=JSGibRx-xpoA_y9Daq9e'
@@ -28,11 +28,9 @@ def index():
     TOOLS='pan,wheel_zoom,box_zoom,reset'
     test = figure(x_axis_type='datetime', tools=TOOLS)
     test.line(dfs['Date'],dfs['Close'])
+    html = file_html(test, CDN, "my plot")
     
-    #output_file('play.html')
-    show(test)
-    
-    return render_template('index1.html')
+    return encode_utf8(html)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
